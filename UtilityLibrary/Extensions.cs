@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 
@@ -46,7 +44,38 @@ namespace UtilityLibrary
             Select(m => int.Parse(m.Value)).ToArray();
         }
 
+        //string s="<span class="_kao"><h1 id="seo_h1_tag"><a class="_64-f" href="https://www.facebook.com/CProgramlashdirmaDili/"><span>C# programlashdirma dili</span></a></h1></span>"
+        //string plainText = htmlText.RemoveHTMLTags();
+        //plainText is equal "C# proqramlasdirma dili"
+        public static string RemoveHTMLTags(this string content)
+        {
+            var cleaned = string.Empty;
+            try
+            {
+                StringBuilder textOnly = new StringBuilder();
+                using (var reader = System.Xml.XmlReader.Create(new StringReader("<xml>" + content + "</xml>")))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == System.Xml.XmlNodeType.Text)
+                            textOnly.Append(reader.ReadContentAsString());
+                    }
+                }
+                cleaned = textOnly.ToString();
+            }
+            catch
+            {
+                string textOnly = string.Empty;
+                Regex tagRemove = new Regex(@"<[^>]*(>|$)");
+                Regex compressSpaces = new Regex(@"[\s\r\n]+");
+                textOnly = tagRemove.Replace(content, string.Empty);
+                textOnly = compressSpaces.Replace(textOnly, " ");
+                cleaned = textOnly;
+            }
+            cleaned = cleaned.Replace("&nbsp;", " ");
 
+            return cleaned;
+        }
 
     }
 }
