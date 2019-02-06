@@ -33,6 +33,17 @@ namespace UtilityLibrary
             return false;
         }
 
+        //Standard ==> IF (s != "AB" && s !=  "BC" && s != "CD" && s != "DE") {...}
+        //With this method ==> IF (s.Not("AB","BC","CD","DE")) {...}
+        public static bool Not(this int? j, params int[] array)
+        {
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (j == array[i]) return false;
+            }
+
+            return true;
+        }
 
         //string s = "1, 2, 4, 5"; 
         //int[] array = s.ToIntArray();
